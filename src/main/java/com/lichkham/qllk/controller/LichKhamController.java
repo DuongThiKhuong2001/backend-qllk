@@ -46,6 +46,16 @@ public class LichKhamController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
     }
+    @GetMapping("/bacsi/{id}")
+    public ResponseEntity<List<LichKham>> getLichKhamByBacSiId(@PathVariable("id") Integer id) {
+        List<LichKham> lichKhamList = lichKhamRepository.findByBacSiId(id);
+        if (!lichKhamList.isEmpty()) {
+            return ResponseEntity.ok(lichKhamList);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+    }
+
 
     @PostMapping
     public ResponseEntity<MessageResponse> createLichKham(@RequestBody LichKhamRequest lichKhamRequest) {

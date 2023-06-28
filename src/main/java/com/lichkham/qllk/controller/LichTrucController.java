@@ -49,7 +49,7 @@ public class LichTrucController {
         lichTruc.setBacSi(bacSiOptional);
         lichTrucRepository.save(lichTruc);
 
-        return ResponseEntity.ok(new MessageResponse("Bac si add successfully."));
+        return ResponseEntity.ok(new MessageResponse("Lich truc add successfully."));
 
     }
 
@@ -77,6 +77,20 @@ public class LichTrucController {
             }
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("LichTruc not found.");
+        }
+    }
+    @GetMapping("/bacsi/{bacSiId}")
+    public ResponseEntity<?> getLichTrucByBacSiId(@PathVariable("bacSiId") Integer bacSiId) {
+        Optional<BacSi> bacSiOptional = bacSiRepository.findById(bacSiId);
+        if (bacSiOptional.isPresent()) {
+            List<LichTruc> lichTrucList = lichTrucRepository.findByBacSiId(bacSiId);
+            if (!lichTrucList.isEmpty()) {
+                return ResponseEntity.ok(lichTrucList);
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No LichTruc found for the given BacSi.");
+            }
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("BacSi not found.");
         }
     }
 

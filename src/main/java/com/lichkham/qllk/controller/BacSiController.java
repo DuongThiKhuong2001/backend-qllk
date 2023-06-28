@@ -65,6 +65,22 @@ public class BacSiController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("BacSi not found.");
         }
     }
+    @GetMapping("/chuyenkhoa/{id}")
+    public ResponseEntity<?> getBacSiByChuyenKhoaId(@PathVariable("id") Integer id) {
+        Optional<ChuyenKhoa> chuyenKhoaOptional = chuyenKhoaRepository.findById(id);
+        if (chuyenKhoaOptional.isPresent()) {
+            ChuyenKhoa chuyenKhoa = chuyenKhoaOptional.get();
+            List<BacSi> bacSiList = bacSiRepository.findByChuyenKhoa(chuyenKhoa);
+            if (!bacSiList.isEmpty()) {
+                return ResponseEntity.ok(bacSiList);
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No BacSi found for the given ChuyenKhoa ID.");
+            }
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("ChuyenKhoa not found.");
+        }
+    }
+
 
     @PutMapping("/{id}")
     public ResponseEntity<?> updateBacSi(@PathVariable("id") Integer id, @RequestBody BacSiRequest bacSiRequest) {

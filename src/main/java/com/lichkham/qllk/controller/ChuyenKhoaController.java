@@ -59,6 +59,22 @@ public class ChuyenKhoaController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("ChuyenKhoa not found.");
         }
     }
+    @GetMapping("/benhvien/{benhVienId}")
+    public ResponseEntity<?> getChuyenKhoaByBenhVienId(@PathVariable("benhVienId") Integer benhVienId) {
+        Optional<BenhVien> benhVienOptional = benhVienRepository.findById(benhVienId);
+        if (benhVienOptional.isPresent()) {
+            BenhVien benhVien = benhVienOptional.get();
+            List<ChuyenKhoa> chuyenKhoaList = chuyenKhoaRepository.findByBenhVien(benhVien);
+            if (!chuyenKhoaList.isEmpty()) {
+                return ResponseEntity.ok(chuyenKhoaList);
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No ChuyenKhoa found for the specified BenhVien.");
+            }
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("BenhVien not found.");
+        }
+    }
+
 
     @PutMapping("/{id}")
     public ResponseEntity<?> updateChuyenKhoa(@PathVariable("id") Integer id, @RequestBody ChuyenKhoaRequest chuyenKhoaRequest) {

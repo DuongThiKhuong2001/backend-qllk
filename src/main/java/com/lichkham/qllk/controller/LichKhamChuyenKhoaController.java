@@ -104,4 +104,30 @@ public class LichKhamChuyenKhoaController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("LichKhamChuyenKhoa not found.");
         }
     }
+    @GetMapping("/lichkham/{lichKhamId}/chuyenkhoa/{chuyenKhoaId}")
+    public ResponseEntity<?> getLichKhamChuyenKhoaByLichKhamAndChuyenKhoa(
+            @PathVariable("lichKhamId") Integer lichKhamId,
+            @PathVariable("chuyenKhoaId") Integer chuyenKhoaId
+    ) {
+        Optional<LichKham> lichKhamOptional = lichKhamRepository.findById(lichKhamId);
+        Optional<ChuyenKhoa> chuyenKhoaOptional = chuyenKhoaRepository.findById(chuyenKhoaId);
+
+        if (lichKhamOptional.isPresent() && chuyenKhoaOptional.isPresent()) {
+            LichKham lichKham = lichKhamOptional.get();
+            ChuyenKhoa chuyenKhoa = chuyenKhoaOptional.get();
+
+            Optional<LichKhamChuyenKhoa> lichKhamChuyenKhoa = lichKhamChuyenKhoaRepository
+                    .findByLichKhamAndChuyenKhoa(lichKham, chuyenKhoa);
+
+            if (lichKhamChuyenKhoa.isPresent()) {
+                return ResponseEntity.ok(lichKhamChuyenKhoa);
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body("LichKhamChuyenKhoa not found for the given LichKham and ChuyenKhoa.");
+            }
+        } else {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
 }

@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 //import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -66,16 +67,16 @@ public class WebSecurityConfig { // extends WebSecurityConfigurerAdapter {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth ->
                         auth.requestMatchers("/api/auth/**").permitAll()
-                                .requestMatchers("/api/test/**").permitAll()
-                                .requestMatchers("/hoso/**").permitAll()
-                                .requestMatchers("/benhvien/**").permitAll()
-                                .requestMatchers("/chuyenkhoa/**").permitAll()
-                                .requestMatchers("/bacsi/**").permitAll()
-                                .requestMatchers("/lichtruc/**").permitAll()
-                                .requestMatchers("/lichkham/**").permitAll()
-                                .requestMatchers("/lichkhamchuyenkhoa/**").permitAll()
+                                .requestMatchers("/hoso/**").hasAnyAuthority("ADMIN","USER")
+                                .requestMatchers("/benhvien/**").hasAnyAuthority("ADMIN","USER")
+                                .requestMatchers("/chuyenkhoa/**").hasAnyAuthority("ADMIN","USER")
+                                .requestMatchers("/bacsi/**").hasAnyAuthority("ADMIN","USER")
+                                .requestMatchers("/lichtruc/**").hasAnyAuthority("ADMIN","USER")
+                                .requestMatchers("/lichkham/**").hasAnyAuthority("ADMIN","USER")
+                                .requestMatchers("/lichkhamchuyenkhoa/**").hasAnyAuthority("ADMIN","USER")
                                 .anyRequest().authenticated()
-                );
+                )
+                        .cors(Customizer.withDefaults());
 
         http.authenticationProvider(authenticationProvider());
 
