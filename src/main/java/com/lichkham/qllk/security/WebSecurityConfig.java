@@ -74,6 +74,7 @@ public class WebSecurityConfig { // extends WebSecurityConfigurerAdapter {
                                 .requestMatchers("/lichtruc/**").hasAnyAuthority("ADMIN","USER")
                                 .requestMatchers("/lichkham/**").hasAnyAuthority("ADMIN","USER")
                                 .requestMatchers("/lichkhamchuyenkhoa/**").hasAnyAuthority("ADMIN","USER")
+                                .requestMatchers("/giotruc/**").hasAnyAuthority("ADMIN","USER")
                                 .anyRequest().authenticated()
                 )
                         .cors(Customizer.withDefaults());

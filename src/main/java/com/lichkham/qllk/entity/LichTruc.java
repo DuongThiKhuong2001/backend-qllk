@@ -1,7 +1,10 @@
 package com.lichkham.qllk.entity;
 
 import jakarta.persistence.*;
+
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "lichtruc")
@@ -17,17 +20,11 @@ public class LichTruc {
     @Column(name = "ngayTruc", nullable = false)
     private Date ngayTruc;
 
-    @Column(name = "gioTruc", nullable = false)
-    private String gioTruc;
 
-    public LichTruc() {
-    }
-
-    public LichTruc(Integer id, BacSi bacSi, Date ngayTruc, String gioTruc) {
+    public LichTruc(Integer id, BacSi bacSi, Date ngayTruc, List<GioTruc> gioTrucList) {
         this.id = id;
         this.bacSi = bacSi;
         this.ngayTruc = ngayTruc;
-        this.gioTruc = gioTruc;
     }
 
     public Integer getId() {
@@ -54,12 +51,6 @@ public class LichTruc {
         this.ngayTruc = ngayTruc;
     }
 
-    public String getGioTruc() {
-        return gioTruc;
+    public LichTruc() {
     }
-
-    public void setGioTruc(String gioTruc) {
-        this.gioTruc = gioTruc;
-    }
-    // getters and setters
 }

@@ -39,38 +39,42 @@ public class LichTrucController {
 
     @PostMapping
     public ResponseEntity<?> createLichTruc(@RequestBody LichTrucRequest lichTrucRequest) {
-        BacSi bacSiOptional = bacSiRepository.findById(lichTrucRequest.getBacSiId()).orElse(null);
-        if (bacSiOptional == null) {
+        Optional<BacSi> bacSiOptional = bacSiRepository.findById(lichTrucRequest.getBacSiId());
+        if (bacSiOptional.isPresent()) {
+            LichTruc lichTruc = new LichTruc();
+            lichTruc.setNgayTruc(lichTrucRequest.getNgayTruc());
+            lichTruc.setBacSi(bacSiOptional.get());
+
+            lichTrucRepository.save(lichTruc);
+
+            return ResponseEntity.ok(new MessageResponse("Lich truc added successfully."));
+        } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("BacSi not found.");
         }
-        LichTruc lichTruc = new LichTruc();
-        lichTruc.setGioTruc(lichTrucRequest.getGioTruc());
-        lichTruc.setNgayTruc(lichTrucRequest.getNgayTruc());
-        lichTruc.setBacSi(bacSiOptional);
-        lichTrucRepository.save(lichTruc);
-
-        return ResponseEntity.ok(new MessageResponse("Lich truc add successfully."));
-
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getLichTrucById(@PathVariable("id") Integer id) {
         Optional<LichTruc> lichTrucOptional = lichTrucRepository.findById(id);
         if (lichTrucOptional.isPresent()) {
-            return ResponseEntity.ok(lichTrucOptional);
+            return ResponseEntity.ok(lichTrucOptional.get());
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("LichTruc not found.");
         }
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateLichTruc(@PathVariable("id") Integer id, @RequestBody LichTruc lichTruc) {
+    public ResponseEntity<?> updateLichTruc(@PathVariable("id") Integer id, @RequestBody LichTrucRequest lichTrucRequest) {
         Optional<LichTruc> existingLichTrucOptional = lichTrucRepository.findById(id);
         if (existingLichTrucOptional.isPresent()) {
-            Optional<BacSi> bacSiOptional = bacSiRepository.findById(lichTruc.getBacSi().getId());
+            Optional<BacSi> bacSiOptional = bacSiRepository.findById(lichTrucRequest.getBacSiId());
             if (bacSiOptional.isPresent()) {
-                lichTruc.setId(id);
-                lichTrucRepository.save(lichTruc);
+                LichTruc existingLichTruc = existingLichTrucOptional.get();
+                existingLichTruc.setNgayTruc(lichTrucRequest.getNgayTruc());
+                existingLichTruc.setBacSi(bacSiOptional.get());
+
+                lichTrucRepository.save(existingLichTruc);
+
                 return ResponseEntity.ok(new MessageResponse("LichTruc updated successfully."));
             } else {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("BacSi not found.");
@@ -79,6 +83,7 @@ public class LichTrucController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("LichTruc not found.");
         }
     }
+
     @GetMapping("/bacsi/{bacSiId}")
     public ResponseEntity<?> getLichTrucByBacSiId(@PathVariable("bacSiId") Integer bacSiId) {
         Optional<BacSi> bacSiOptional = bacSiRepository.findById(bacSiId);

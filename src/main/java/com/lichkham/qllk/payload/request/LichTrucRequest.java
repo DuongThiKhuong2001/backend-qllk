@@ -6,12 +6,10 @@ public class LichTrucRequest {
 
     private Integer bacSiId;
     private Date ngayTruc;
-    private String gioTruc;
 
     public Integer getBacSiId() {
         return bacSiId;
     }
-
     public void setBacSiId(Integer bacSiId) {
         this.bacSiId = bacSiId;
     }
@@ -24,11 +22,4 @@ public class LichTrucRequest {
         this.ngayTruc = ngayTruc;
     }
 
-    public String getGioTruc() {
-        return gioTruc;
-    }
-
-    public void setGioTruc(String gioTruc) {
-        this.gioTruc = gioTruc;
-    }
 }
