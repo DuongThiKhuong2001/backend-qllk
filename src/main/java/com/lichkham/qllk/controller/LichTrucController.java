@@ -55,9 +55,7 @@ public class LichTrucController {
             LichTruc lichTruc = new LichTruc();
             lichTruc.setNgayTruc(lichTrucRequest.getNgayTruc());
             lichTruc.setBacSi(bacSiOptional.get());
-
             lichTrucRepository.save(lichTruc);
-
             return ResponseEntity.ok(new MessageResponse("Lich truc added successfully."));
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("BacSi not found.");

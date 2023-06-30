@@ -76,7 +76,7 @@ public class GioTrucController {
     }
     @GetMapping("/lichtruc/{lichTrucId}")
     public ResponseEntity<?> getGioTrucByLichTrucId(@PathVariable("lichTrucId") Integer lichTrucId) {
-        List<GioTruc> gioTrucList = gioTrucRepository.findByLichTrucId(lichTrucId);
+        List<GioTruc> gioTrucList = gioTrucRepository.findByLichTrucIdAndTrangThai(lichTrucId, "1");
         if (!gioTrucList.isEmpty()) {
             return ResponseEntity.ok(gioTrucList);
         } else {
