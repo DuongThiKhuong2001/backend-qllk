@@ -15,14 +15,23 @@ public class LichKhamChuyenKhoa {
     @ManyToOne
     @JoinColumn(name = "chuyenKhoaId", nullable = false)
     private ChuyenKhoa chuyenKhoa;
-
+    private String trangThai;
     public LichKhamChuyenKhoa() {
     }
 
-    public LichKhamChuyenKhoa(Integer id, LichKham lichKham, ChuyenKhoa chuyenKhoa) {
+    public LichKhamChuyenKhoa(Integer id, LichKham lichKham, ChuyenKhoa chuyenKhoa, String trangThai) {
         this.id = id;
         this.lichKham = lichKham;
         this.chuyenKhoa = chuyenKhoa;
+        this.trangThai = trangThai;
+    }
+
+    public String getTrangThai() {
+        return trangThai;
+    }
+
+    public void setTrangThai(String trangThai) {
+        this.trangThai = trangThai;
     }
 
     public Integer getId() {
