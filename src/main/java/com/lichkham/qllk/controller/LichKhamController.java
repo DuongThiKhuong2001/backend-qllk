@@ -1,20 +1,15 @@
 package com.lichkham.qllk.controller;
 
-import com.lichkham.qllk.entity.BacSi;
-import com.lichkham.qllk.entity.HoSo;
-import com.lichkham.qllk.entity.LichKham;
-import com.lichkham.qllk.entity.User;
+import com.lichkham.qllk.entity.*;
 import com.lichkham.qllk.payload.request.LichKhamRequest;
 import com.lichkham.qllk.payload.response.MessageResponse;
-import com.lichkham.qllk.repository.BacSiRepository;
-import com.lichkham.qllk.repository.HoSoRepository;
-import com.lichkham.qllk.repository.LichKhamRepository;
-import com.lichkham.qllk.repository.UserRepository;
+import com.lichkham.qllk.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -23,19 +18,17 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/lichkham")
 public class LichKhamController {
-    private final LichKhamRepository lichKhamRepository;
-    private final UserRepository userRepository;
-    private final BacSiRepository bacSiRepository;
-    private final HoSoRepository hoSoRepository;
-
     @Autowired
-    public LichKhamController(LichKhamRepository lichKhamRepository, UserRepository userRepository,
-                              BacSiRepository bacSiRepository, HoSoRepository hoSoRepository) {
-        this.lichKhamRepository = lichKhamRepository;
-        this.userRepository = userRepository;
-        this.bacSiRepository = bacSiRepository;
-        this.hoSoRepository = hoSoRepository;
-    }
+    private  LichKhamRepository lichKhamRepository;
+    @Autowired
+    private  UserRepository userRepository;
+    @Autowired
+    private  BacSiRepository bacSiRepository;
+    @Autowired
+    private  HoSoRepository hoSoRepository;
+    @Autowired
+    private GioTrucRepository gioTrucRepository;
+
 
     @GetMapping
     public ResponseEntity<List<LichKham>> getAllLichKham() {
@@ -46,34 +39,24 @@ public class LichKhamController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
     }
-    @GetMapping("/bacsi/{id}")
-    public ResponseEntity<List<LichKham>> getLichKhamByBacSiId(@PathVariable("id") Integer id) {
-        List<LichKham> lichKhamList = lichKhamRepository.findByBacSiId(id);
-        if (!lichKhamList.isEmpty()) {
-            return ResponseEntity.ok(lichKhamList);
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-        }
-    }
+//    @GetMapping("/bacsi/{id}")
+//    public ResponseEntity<List<LichKham>> getLichKhamByBacSiId(@PathVariable("id") Integer id) {
+//        List<LichKham> lichKhamList = lichKhamRepository.findByBacSiId(id);
+//        if (!lichKhamList.isEmpty()) {
+//            return ResponseEntity.ok(lichKhamList);
+//        } else {
+//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+//        }
+//    }
 
 
     @PostMapping
     public ResponseEntity<MessageResponse> createLichKham(@RequestBody LichKhamRequest lichKhamRequest) {
-        User user = userRepository.findById(lichKhamRequest.getUserId()).orElse(null);
-        BacSi bacSi = bacSiRepository.findById(lichKhamRequest.getBacSiId()).orElse(null);
         HoSo hoSo = hoSoRepository.findById(lichKhamRequest.getHoSoId()).orElse(null);
-
-        if (user == null || bacSi == null || hoSo == null) {
-            return ResponseEntity.badRequest().build();
-        }
-
+        GioTruc gioTruc = gioTrucRepository.findById(lichKhamRequest.getGioTrucId()).orElse(null);
         LichKham lichKham = new LichKham();
-        lichKham.setUser(user);
-        lichKham.setBacSi(bacSi);
-        lichKham.setNgayKham(lichKhamRequest.getNgayKham());
-        lichKham.setGioKham(lichKhamRequest.getGioKham());
+        lichKham.setGioTruc(gioTruc);
         lichKham.setHoSo(hoSo);
-        lichKham.setMoTa(lichKhamRequest.getMoTa());
 
         lichKhamRepository.save(lichKham);
 
@@ -91,21 +74,11 @@ public class LichKhamController {
                                                           @RequestBody LichKhamRequest lichKhamRequest) {
         Optional<LichKham> lichKhamOptional = lichKhamRepository.findById(id);
         if (lichKhamOptional.isPresent()) {
-            User user = userRepository.findById(lichKhamRequest.getUserId()).orElse(null);
-            BacSi bacSi = bacSiRepository.findById(lichKhamRequest.getBacSiId()).orElse(null);
             HoSo hoSo = hoSoRepository.findById(lichKhamRequest.getHoSoId()).orElse(null);
-
-            if (user == null || bacSi == null || hoSo == null) {
-                return ResponseEntity.badRequest().build();
-            }
-
+            GioTruc gioTruc = gioTrucRepository.findById(lichKhamRequest.getGioTrucId()).orElse(null);
             LichKham lichKham = lichKhamOptional.get();
-            lichKham.setUser(user);
-            lichKham.setBacSi(bacSi);
-            lichKham.setNgayKham(lichKhamRequest.getNgayKham());
-            lichKham.setGioKham(lichKhamRequest.getGioKham());
+            lichKham.setGioTruc(gioTruc);
             lichKham.setHoSo(hoSo);
-
             lichKhamRepository.save(lichKham);
 
             return ResponseEntity.ok(new MessageResponse("LichKham updated successfully."));
@@ -124,4 +97,28 @@ public class LichKhamController {
             return ResponseEntity.notFound().build();
         }
     }
+    @PostMapping("/danhsach")
+    public ResponseEntity<MessageResponse> createBatchLichKham(@RequestBody List<LichKhamRequest> lichKhamRequests) {
+        List<LichKham> lichKhamList = new ArrayList<>();
+
+        for (LichKhamRequest lichKhamRequest : lichKhamRequests) {
+            HoSo hoSo = hoSoRepository.findById(lichKhamRequest.getHoSoId()).orElse(null);
+            GioTruc gioTruc = gioTrucRepository.findById(lichKhamRequest.getGioTrucId()).orElse(null);
+
+            if (hoSo != null && gioTruc != null) {
+                LichKham lichKham = new LichKham();
+                lichKham.setGioTruc(gioTruc);
+                lichKham.setHoSo(hoSo);
+                lichKhamList.add(lichKham);
+            }
+        }
+
+        if (!lichKhamList.isEmpty()) {
+            lichKhamRepository.saveAll(lichKhamList);
+            return ResponseEntity.ok(new MessageResponse("Batch LichKham created successfully."));
+        } else {
+            return ResponseEntity.badRequest().body(new MessageResponse("Invalid HoSoId or GioTrucId provided."));
+        }
+    }
+
 }
