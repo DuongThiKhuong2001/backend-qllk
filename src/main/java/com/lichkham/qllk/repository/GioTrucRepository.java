@@ -9,4 +9,5 @@ import java.util.List;
 @Repository
 public interface GioTrucRepository extends JpaRepository<GioTruc, Integer> {
     List<GioTruc> findByLichTrucId(Integer lichTrucId);
+    List<GioTruc> findByTrangThai(String trangThai);
 }
