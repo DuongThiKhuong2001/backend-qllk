@@ -97,6 +97,17 @@ public class LichKhamController {
             return ResponseEntity.notFound().build();
         }
     }
+
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<List<LichKham>> getLichKhamByUserId(@PathVariable("userId") Integer userId) {
+        List<LichKham> lichKhamList = lichKhamRepository.findByUserId(userId);
+        if (!lichKhamList.isEmpty()) {
+            return ResponseEntity.ok(lichKhamList);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+    }
+
     @PostMapping("/danhsach")
     public ResponseEntity<MessageResponse> createBatchLichKham(@RequestBody List<LichKhamRequest> lichKhamRequests) {
         List<LichKham> lichKhamList = new ArrayList<>();
